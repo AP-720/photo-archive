@@ -1,0 +1,77 @@
+@import "reset.css";
+
+:root {
+	--bg-main: oklch(0.9162 0.0167 162.72);
+	--text-main: oklch(24.9% 0.013 342.8);
+
+	/* Spacing */
+	--spacing-xs: 0.25rem;
+	--spacing-sm: 0.5rem;
+	--spacing-md: 1rem;
+	--spacing-lg: 1.5rem;
+	--spacing-xl: 2rem;
+	--spacing-xxl: 3rem;
+}
+
+a {
+	text-decoration: none;
+}
+
+input[type="range"] {
+	width: 100%;
+}
+
+a:visited {
+	color: inherit;
+}
+
+body {
+	background-color: var(--bg-main);
+	color: var(--text-main);
+	margin: var(--spacing-lg);
+	font-family: "Space Mono", monospace;
+}
+
+header {
+	padding-bottom: var(--spacing-xl);
+	text-decoration: underline;
+}
+
+main {
+	/* border: 2px solid; */
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+}
+
+aside {
+	border: 2px solid;
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-sm);
+	width: 300px;
+}
+
+footer {
+	display: flex;
+	justify-content: center;
+}
+
+.nav_bar {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-xs);
+	padding-bottom: var(--spacing-lg);
+}
+
+.range_wrapper {
+	align-content: center;
+	display: flex;
+	gap: var(--spacing-xs);
+	padding-bottom: var(--spacing-sm);
+	justify-content: space-between;
+	
+}
+
+#photo_grid {
+	border: 2px solid;
+}
