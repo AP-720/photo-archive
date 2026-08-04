@@ -19,6 +19,75 @@ a {
 
 input[type="range"] {
 	width: 100%;
+	-webkit-appearance: none; /* Chrome/Safari/Edge */
+	appearance: none; /* standard property, good to include too */
+	background-color: transparent;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	width: 3px;
+	height: 20px;
+	background: var(--text-main);
+	cursor: pointer;
+	margin-top: -6px;
+}
+
+input[type="range"]::-moz-range-thumb {
+	width: 3px;
+	height: 20px;
+	background: var(--text-main);
+	cursor: pointer;
+	border: none;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+	height: 8px;
+	background:
+		repeating-linear-gradient(
+			to right,
+			var(--text-main) 0,
+			var(--text-main) 1px,
+			transparent 1px,
+			transparent 10%
+		),
+		linear-gradient(
+			to right,
+			transparent calc(100% - 1px),
+			var(--text-main) calc(100% - 1px)
+		),
+		linear-gradient(
+			to bottom,
+			transparent calc(50% - 0.5px),
+			var(--text-main) calc(50% - 0.5px),
+			var(--text-main) calc(50% + 0.5px),
+			transparent calc(50% + 0.5px)
+		);
+	-webkit-appearance: none;
+}
+
+input[type="range"]::-moz-range-track {
+	height: 8px;
+	background:
+		repeating-linear-gradient(
+			to right,
+			var(--text-main) 0,
+			var(--text-main) 1px,
+			transparent 1px,
+			transparent 10%
+		),
+		linear-gradient(
+			to right,
+			transparent calc(100% - 1px),
+			var(--text-main) calc(100% - 1px)
+		),
+		linear-gradient(
+			to bottom,
+			transparent calc(50% - 0.5px),
+			var(--text-main) calc(50% - 0.5px),
+			var(--text-main) calc(50% + 0.5px),
+			transparent calc(50% + 0.5px)
+		);
 }
 
 a:visited {
@@ -44,7 +113,7 @@ main {
 }
 
 aside {
-	border: 2px solid;
+	/* border: 2px solid; */
 	display: flex;
 	flex-direction: column;
 	gap: var(--spacing-sm);
@@ -60,16 +129,23 @@ footer {
 	display: flex;
 	flex-direction: column;
 	gap: var(--spacing-xs);
-	padding-bottom: var(--spacing-lg);
+	padding-bottom: var(--spacing-xl);
+}
+
+.weight_wrapper {
+	display: flex;
+	flex-direction: column;
 }
 
 .range_wrapper {
-	align-content: center;
 	display: flex;
 	gap: var(--spacing-xs);
 	padding-bottom: var(--spacing-sm);
 	justify-content: space-between;
-	
+}
+
+#button {
+	align-self: center;
 }
 
 #photo_grid {
