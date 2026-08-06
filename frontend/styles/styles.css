@@ -109,7 +109,8 @@ header {
 main {
 	/* border: 2px solid; */
 	display: grid;
-	grid-template-columns: 1fr 1fr;
+	grid-template-columns: 300px 1fr;
+	gap: var(--spacing-xxl);
 }
 
 aside {
@@ -117,12 +118,15 @@ aside {
 	display: flex;
 	flex-direction: column;
 	gap: var(--spacing-sm);
-	width: 300px;
 }
 
 footer {
 	display: flex;
 	justify-content: center;
+}
+
+.header_title {
+	/* width: 300px; */
 }
 
 .nav_bar {
@@ -140,12 +144,28 @@ footer {
 .range_wrapper {
 	display: flex;
 	gap: var(--spacing-xs);
-	padding-bottom: var(--spacing-sm);
+	padding-bottom: var(--spacing-xl);
 	justify-content: space-between;
 }
 
-#button {
+#button_dice {
 	align-self: center;
+	border: 0;
+	padding: 0;
+	background-color: transparent;
+	cursor: pointer;
+	transition: transform 0.1s ease-in-out ;
+}
+
+#button_dice:hover {
+	transform: scale(1.05);
+}
+
+.dice_icon {
+	fill: currentColor;
+	height: 70px;
+	width: 70px;
+	color: var(--text-main);
 }
 
 #photo_grid {
