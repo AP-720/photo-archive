@@ -170,4 +170,7 @@ footer {
 
 #photo_grid {
 	border: 2px solid;
+	/* display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: var(--spacing-sm); */
 }
