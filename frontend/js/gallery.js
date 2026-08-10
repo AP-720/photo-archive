@@ -1,4 +1,5 @@
 import { getPhotos, renderPhotos } from "./photos.js";
+import { processTiles } from "./masonry.js";
 
 let seenIds = new Set();
 
@@ -21,5 +22,6 @@ button.addEventListener("click", async () => {
 	const tiles = document.querySelectorAll(".tile");
 	tiles.forEach((tile) => tile.remove());
 
-	renderPhotos(photos.photos, photoGrid);
+	const tileElements = renderPhotos(photos.photos, photoGrid);
+	processTiles(tileElements, photos.photos);
 });

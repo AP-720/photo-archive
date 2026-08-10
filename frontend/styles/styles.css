@@ -170,7 +170,8 @@ footer {
 
 #photo_grid {
 	border: 2px solid;
-	/* display: grid;
-	grid-template-columns: 1fr 1fr 1fr;
-	gap: var(--spacing-sm); */
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	grid-auto-rows: var(--spacing-xxl);
+	gap: var(--spacing-sm);
 }
