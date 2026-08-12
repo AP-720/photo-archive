@@ -4,6 +4,9 @@ const styles = getComputedStyle(photoGrid);
 
 const gap = parseFloat(styles.getPropertyValue("gap"));
 const rowUnit = parseFloat(styles.getPropertyValue("grid-auto-rows"));
+let tileElements = [];
+let photos = [];
+let timer;
 
 /**
  * Calculates and applies the correct grid-row span for a single photo tile, so its rendered height matches its true aspect 
@@ -25,8 +28,20 @@ export function setTileGrid(tileElement, photo) {
 	tileElement.style.gridRow = `span ${rowSpan}`;
 }
 
-export function processTiles(tiles, photos) {
+export function processTiles() {
 	for (let i = 0; photos.length > i; i++) {
-		setTileGrid(tiles[i], photos[i]);
+		setTileGrid(tileElements[i], photos[i]);
 	}
 }
+
+export function setCurrentPhotoData(tileArray, photoArray) {
+	tileElements = tileArray;
+	photos = photoArray;
+}
+
+window.addEventListener("resize", () => {
+	clearTimeout(timer);
+	timer = setTimeout(() => {
+		processTiles();
+	}, 300);
+});
