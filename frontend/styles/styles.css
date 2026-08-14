@@ -17,6 +17,10 @@ a {
 	text-decoration: none;
 }
 
+p {
+	margin: 0;
+}
+
 input[type="range"] {
 	width: 100%;
 	-webkit-appearance: none; /* Chrome/Safari/Edge */
@@ -141,6 +145,12 @@ footer {
 	flex-direction: column;
 }
 
+/* .sort_wrapper {
+	display: flex;
+	flex-direction: column;
+	border: solid red;
+} */
+
 .range_wrapper {
 	display: flex;
 	gap: var(--spacing-xs);
@@ -154,7 +164,7 @@ footer {
 	padding: 0;
 	background-color: transparent;
 	cursor: pointer;
-	transition: transform 0.1s ease-in-out ;
+	transition: transform 0.1s ease-in-out;
 }
 
 #button_dice:hover {

@@ -1,7 +1,17 @@
 import { mockPhotoResponse } from "./mockPhotos.js";
 import { buildCloudinaryUrl } from "./cloudinary.js";
 
+export const SortOrder = {
+    OLDEST: "ASC",
+    NEWEST: "DESC",
+    RANDOM: "RANDOM",
+};
+
 export async function getPhotos(weight, seenIds) {
+	return mockPhotoResponse;
+}
+
+export async function getAllPhotos(sortOrder, offset, limit = 50) {
 	return mockPhotoResponse;
 }
 
@@ -12,7 +22,7 @@ export async function getPhotos(weight, seenIds) {
  * @returns {HTMLElement[]} array of the created tile div elements, in the same order as `photos`
  */
 export function renderPhotos(photos, gridElement) {
-	const tiles = []
+	const tiles = [];
 	for (const photo of photos) {
 		const tile = document.createElement("div");
 		tile.classList.add("tile");
@@ -20,7 +30,7 @@ export function renderPhotos(photos, gridElement) {
 		img.src = buildCloudinaryUrl(photo.cloudinary_id);
 		tile.appendChild(img);
 		gridElement.appendChild(tile);
-		tiles.push(tile)
+		tiles.push(tile);
 	}
-	return tiles
+	return tiles;
 }

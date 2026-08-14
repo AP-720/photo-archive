@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Andy Price Memorial Archive</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+			rel="stylesheet"
+		/>
+		<link rel="stylesheet" href="../styles/styles.css" />
+		<script src="../js/allImages.js" type="module" defer></script>
+	</head>
+	<body>
+		<header>
+			<a href="/"
+				><h1 class="header_title">
+					Andy Price <br />
+					Memorial Archive
+				</h1></a
+			>
+		</header>
+		<main>
+			<aside>
+				<nav class="nav_bar">
+					<a href="http://" target="_blank">Home</a>
+					<a href="http://" target="_blank">All Images</a>
+					<a href="http://" target="_blank">About</a>
+				</nav>
+				<div class="sort_wrapper">
+					<p>Sort by:</p>
+					<div>
+						<label for="newest">Newest</label>
+						<input
+							type="radio"
+							name="sort"
+							id="newest"
+							value="NEWEST"
+							checked
+						/>
+					</div>
+					<div>
+						<label for="oldest">Oldest</label>
+						<input type="radio" name="sort" id="oldest" value="OLDEST" />
+					</div>
+					<div>
+						<label for="random">Random</label>
+						<input type="radio" name="sort" id="random" value="RANDOM" />
+					</div>
+				</div>
+			</aside>
+			<section id="photo_grid"></section>
+		</main>
+		<footer>
+			<p class="footer-content">© 2026 Andy Price</p>
+		</footer>
+	</body>
+</html>
