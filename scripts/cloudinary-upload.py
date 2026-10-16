@@ -1,48 +1,79 @@
+import hashlib
+import os
 import sys
 from pathlib import Path
-from PIL import Image
-from PIL.ExifTags import IFD, Base
+
+import psycopg
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from datetime import datetime
 
-Image.MAX_IMAGE_PIXELS = 200_000_000
+import cloudinary
+import cloudinary.api
+import cloudinary.uploader
+from PIL import Image
+from PIL.ExifTags import Base
 
-folder_path = sys.argv[1]
+cloudinary_url = os.getenv("CLOUDINARY_URL")
+config = cloudinary.config(secure=True)
 
-image_paths = Path(folder_path).iterdir() 
+print(cloudinary.api.ping())
 
-suffixes = [".jpeg", '.jpg', '.png', '.tif', '.tiff', '.webp', '.gif']
-ready = []
-needs_date = []
-
-for image_path in image_paths:
-    suffix = image_path.suffix.lower()
-    if suffix  in suffixes:
-        with Image.open(image_path) as img:
-            exif = img.getexif()
-            exif_ifd = exif.get_ifd(IFD.Exif)
-            date_taken = exif_ifd.get(Base.DateTimeOriginal)
-            width, height = img.size
-            if date_taken is None:
-                needs_date.append({'image_path': image_path, 'date_taken': None, 'width': width, 'height': height})
-            else:
-                ready.append({'image_path': image_path, 'date_taken': date_taken,'width': width, 'height': height})
+folder_path = Path(sys.argv[1])
 
 
+def hash_file(path):
+    with open(path, "rb") as f:
+        data = f.read()
+
+    return hashlib.sha256(data).hexdigest()
 
 
-for image in needs_date:
-    print(image["image_path"])
-    while True :
-        date_response = input("Enter date: ")
-        try:
-            parsed_date = datetime.strptime(date_response, "%Y:%m:%d")
-            string_date = parsed_date.strftime("%Y:%m:%d")
-            print("Valid date:", string_date)
-            confirmation = input("Is date correct, confirm y/n: ")
-            if confirmation == "y":
-                image["date_taken"] = string_date
-                break
-        except ValueError:
-            print("Invalid date format")
+def get_date_taken(path):
+    with Image.open(path) as img:
+        raw = img.getexif().get(Base.DateTime)
 
-print(needs_date)
+    return datetime.strptime(raw, "%Y:%m:%d %H:%M:%S").date()
+
+
+with psycopg.connect("dbname=ap_archive") as conn, conn.cursor() as cur:
+    cur.execute("SELECT hash FROM images")
+    rows = cur.fetchall()
+    hashes = {row[0] for row in rows}
+    print(hashes)
+
+    failed = []
+    for file in folder_path.rglob("*.jpg"):
+        hashed_file = hash_file(file)
+        if hashed_file in hashes:
+            print(f"skip - {file.name}")
+        else:
+            try:
+                response = cloudinary.uploader.upload(
+                    str(file), public_id=hashed_file, overwrite=False
+                )
+                public_id = response["public_id"]
+                width = response["width"]
+                height = response["height"]
+                date_taken = get_date_taken(file)
+                print(date_taken)
+                cur.execute(
+                    "INSERT INTO images (hash, public_id, date_taken, width,height) VALUES (%s, %s, %s, %s, %s)",
+                    (hashed_file, public_id, date_taken, width, height),
+                )
+                conn.commit()
+                hashes.add(hashed_file)
+                print(f"new - {file.name}")
+            except Exception as error:
+                conn.rollback()
+                print(f"FAILED: {file} - {error}")
+                failed.append(file)
+
+    if failed:
+        print("Failed files:")
+        for path in failed:
+            print(f"  {path}")
+
+

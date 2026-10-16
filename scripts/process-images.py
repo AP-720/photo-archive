@@ -17,7 +17,9 @@ For each image, this script:
     6. Reads the date the photo was taken from its EXIF data, asking you to
        type it in by hand if it's missing (same validate-and-confirm loop
        already used in cloudinary-upload.py)
-    7. Saves the result as a JPEG inside <destination_root>/<year>/<month>/
+    7. Saves the result as a JPEG inside <destination_root>/<year>/<month>/,
+       with the FULL date (year, month AND day) written into the saved
+       file's EXIF, so later scripts can read it straight from the file
 
 One bad file won't crash the whole run - failures are collected and printed
 at the end, so you can go investigate just those.
@@ -28,14 +30,15 @@ Usage:
 Example:
     python3 scripts/process-images.py ~/Desktop/old-hard-drive ~/Desktop/sorted-archive
 
-This hasn't been run against your real archive yet - test it on a small,
-deliberately awkward sample first (a rotated phone photo, a TIFF, an
-already-small image) before pointing it at the full backlog.
+Use a NEW, EMPTY destination_root each run. unique_destination_path() adds
+"_1", "_2" etc. to a filename that already exists, so pointing this at a
+folder that already holds processed copies would create a duplicate of every
+image.
 """
 
 import sys
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 from PIL import Image, ImageOps
 from PIL.ExifTags import IFD, Base
@@ -110,7 +113,8 @@ def fix_mode(img):
 
 def get_date_taken(img, image_path):
     """
-    Returns a (year, month) tuple as strings, e.g. ("2021", "03").
+    Returns the full date the photo was taken as a datetime object
+    (year, month and day).
 
     Tries to read the date from the image's EXIF data first. DateTimeOriginal
     lives in a NESTED block of EXIF data (the "Exif IFD"), not in the
@@ -122,12 +126,34 @@ def get_date_taken(img, image_path):
     validate-and-confirm loop already used in cloudinary-upload.py. This
     logic has moved here from that script, since the date is needed at
     processing/sorting time, not at upload time.
+
+    The caller uses the whole date: the year and month pick the destination
+    folder, and the full date is written into the saved file's EXIF so that
+    nothing typed in by hand is ever lost.
     """
     exif = img.getexif()
     exif_ifd = exif.get_ifd(IFD.Exif)
     date_taken = exif_ifd.get(Base.DateTimeOriginal)
 
-    if date_taken is None:
+    # Some scanned images (the "CNV" batch) carry a DateTimeOriginal tag
+    # that's present but not a real date - seen so far as a plain empty
+    # string, a whitespace-only string, and a stray colon with no digits.
+    # Rather than keep special-casing each new malformed shape individually
+    # as more turn up, we attempt the parse and treat ANY failure - missing,
+    # blank, or garbled in some other way entirely - the same way: fall
+    # through to the manual entry prompt below.
+    parsed_date = None
+    if date_taken:
+        try:
+            # EXIF dates are formatted "YYYY:MM:DD HH:MM:SS" - only the date
+            # portion is needed, so split off the time before parsing.
+            parsed_date = datetime.strptime(
+                date_taken.strip().split(" ")[0], "%Y:%m:%d"
+            )
+        except ValueError:
+            parsed_date = None
+
+    if parsed_date is None:
         print(f"No date found for: {image_path}")
         while True:
             date_response = input("Enter date (YYYY:MM:DD): ")
@@ -141,12 +167,8 @@ def get_date_taken(img, image_path):
             )
             if confirmation.lower() == "y":
                 break
-    else:
-        # EXIF dates are formatted "YYYY:MM:DD HH:MM:SS" - only the date
-        # portion is needed, so split off the time before parsing.
-        parsed_date = datetime.strptime(date_taken.split(" ")[0], "%Y:%m:%d")
 
-    return parsed_date.strftime("%Y"), parsed_date.strftime("%m")
+    return parsed_date
 
 
 def unique_destination_path(destination_folder, filename):
@@ -194,7 +216,10 @@ def process_image(image_path, destination_root):
         # manual "is this already small enough?" check.
         img.thumbnail((MAX_DIMENSION, MAX_DIMENSION))
 
-        year, month = get_date_taken(img, image_path)
+        # The full date (a datetime). The year and month choose the folder;
+        # the whole date is also written into the saved file's EXIF below.
+        date_taken = get_date_taken(img, image_path)
+        year, month = date_taken.strftime("%Y"), date_taken.strftime("%m")
 
         destination_folder = destination_root / year / month
         destination_folder.mkdir(parents=True, exist_ok=True)
@@ -214,13 +239,25 @@ def process_image(image_path, destination_root):
         if icc_profile:
             save_kwargs["icc_profile"] = icc_profile
 
+        # Pillow only writes EXIF into a saved file if it's passed in
+        # explicitly, so without this the saved copy has no EXIF at all and
+        # the day of the month is lost. Starting from a brand new, empty
+        # Exif object means the old orientation tag can't sneak back in
+        # either. Only the date is kept (the time is written as 00:00:00,
+        # because this script only ever works with the date).
+        exif = Image.Exif()
+        exif[Base.DateTime] = date_taken.strftime("%Y:%m:%d 00:00:00")
+        save_kwargs["exif"] = exif
+
         img.save(destination_path, "JPEG", **save_kwargs)
         print(f"Saved: {destination_path}")
 
 
 def main():
     if len(sys.argv) != 3:
-        print("Usage: python3 scripts/process-images.py <source_folder> <destination_root>")
+        print(
+            "Usage: python3 scripts/process-images.py <source_folder> <destination_root>"
+        )
         sys.exit(1)
 
     source_folder = Path(sys.argv[1])
@@ -234,7 +271,8 @@ def main():
     # is_file() filters out the directories themselves (e.g. "2021", "03"),
     # which rglob would otherwise also return.
     image_paths = [
-        p for p in source_folder.rglob("*")
+        p
+        for p in source_folder.rglob("*")
         if p.is_file() and p.suffix.lower() in VALID_SUFFIXES
     ]
 
