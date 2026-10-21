@@ -42,7 +42,7 @@ with psycopg.connect("dbname=ap_archive") as conn, conn.cursor() as cur:
     cur.execute("SELECT hash FROM images")
     rows = cur.fetchall()
     hashes = {row[0] for row in rows}
-    print(hashes)
+    # print(hashes)
 
     failed = []
     for file in folder_path.rglob("*.jpg"):
@@ -77,3 +77,4 @@ with psycopg.connect("dbname=ap_archive") as conn, conn.cursor() as cur:
             print(f"  {path}")
 
 
+# python3 scripts/cloudinary-upload.py "/Users/andyprice/Desktop/full_archive_images_processed/2008"
