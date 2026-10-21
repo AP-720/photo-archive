@@ -36,5 +36,5 @@ export const mockPhotoResponse = {
 			height: 1350,
 		},
 	],
-    hasMore: true
-}
+	hasMore: true,
+};

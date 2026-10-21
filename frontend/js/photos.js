@@ -2,17 +2,42 @@ import { mockPhotoResponse } from "./mockPhotos.js";
 import { buildCloudinaryUrl } from "./cloudinary.js";
 
 export const SortOrder = {
-    OLDEST: "ASC",
-    NEWEST: "DESC",
-    RANDOM: "RANDOM",
+	OLDEST: "ASC",
+	NEWEST: "DESC",
 };
 
-export async function getPhotos(weight, seenIds) {
-	return mockPhotoResponse;
+export const seenIds = new Set();
+
+const baseAddress = "http://127.0.0.1:8000";
+
+export async function getPhotos(weight, seenIds, limit = 50) {
+	const url = `${baseAddress}/random?weight=${weight}&limit=${limit}`;
+
+	const response = await fetch(url, {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({ ids: [...seenIds] }),
+	});
+
+	if (!response.ok) {
+		throw new Error(`Request failed: ${response.status}`);
+	}
+
+	return await response.json();
 }
 
 export async function getAllPhotos(sortOrder, offset, limit = 50) {
-	return mockPhotoResponse;
+	const url = `${baseAddress}/all-images?sort=${sortOrder}&offset=${offset}&limit=${limit}`;
+
+	const response = await fetch(url, {
+		method: "GET",
+	});
+
+	if (!response.ok) {
+		throw new Error(`Request failed: ${response.status}`);
+	}
+
+	return await response.json();
 }
 
 /**
@@ -27,7 +52,7 @@ export function renderPhotos(photos, gridElement) {
 		const tile = document.createElement("div");
 		tile.classList.add("tile");
 		const img = document.createElement("img");
-		img.src = buildCloudinaryUrl(photo.cloudinary_id);
+		img.src = buildCloudinaryUrl(photo.public_id);
 		tile.appendChild(img);
 		gridElement.appendChild(tile);
 		tiles.push(tile);
