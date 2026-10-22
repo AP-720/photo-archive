@@ -1,4 +1,3 @@
-import { mockPhotoResponse } from "./mockPhotos.js";
 import { buildCloudinaryUrl } from "./cloudinary.js";
 
 export const SortOrder = {
