@@ -1,5 +1,6 @@
 import { SortOrder, getAllPhotos, renderPhotos } from "./photos.js";
 import { processTiles, setCurrentPhotoData } from "./masonry.js";
+import { setLoading } from "./loading.js";
 
 let offset = 0;
 let isLoading = false;
@@ -9,13 +10,19 @@ const photoGrid = document.querySelector("#photo_grid");
 const radioGroup = document.querySelector(".sort_wrapper");
 const sentinel = document.querySelector("#sentinel");
 
-const images = await getAllPhotos(sortOrder, offset);
-offset = images.photos.length;
+try {
+	setLoading(true);
 
-const tileElements = renderPhotos(images.photos, photoGrid);
+	const images = await getAllPhotos(sortOrder, offset);
+	offset = images.photos.length;
 
-setCurrentPhotoData(tileElements, images.photos);
-processTiles();
+	const tileElements = renderPhotos(images.photos, photoGrid);
+
+	setCurrentPhotoData(tileElements, images.photos);
+	processTiles();
+} finally {
+	setLoading(false);
+}
 
 radioGroup.addEventListener("change", async (event) => {
 	if (isLoading) return;
@@ -25,6 +32,7 @@ radioGroup.addEventListener("change", async (event) => {
 
 	try {
 		isLoading = true;
+		setLoading(isLoading);
 		const photos = await getAllPhotos(sortOrder, 0, previousCount);
 
 		offset = photos.photos.length;
@@ -37,6 +45,7 @@ radioGroup.addEventListener("change", async (event) => {
 		processTiles();
 	} finally {
 		isLoading = false;
+		setLoading(isLoading);
 	}
 });
 
@@ -53,6 +62,7 @@ async function infiniteScroll(entries) {
 
 	try {
 		isLoading = true;
+		setLoading(isLoading, false)
 		const photos = await getAllPhotos(sortOrder, offset);
 
 		if (!photos.hasMore) {
@@ -66,6 +76,7 @@ async function infiniteScroll(entries) {
 		processTiles();
 	} finally {
 		isLoading = false;
+		setLoading(isLoading, false)
 	}
 }
 

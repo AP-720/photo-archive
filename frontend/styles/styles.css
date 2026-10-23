@@ -230,6 +230,9 @@ input[type="range"]::-moz-range-track {
 	left: 50%;
 	transform: translate(-50%, -50%);
 	display: none;
+	background: color-mix(in oklab, var(--bg-main) 80%, transparent);
+	padding: var(--spacing-md);
+	border-radius: 50%;
 }
 
 .loader {
