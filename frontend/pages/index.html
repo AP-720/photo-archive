@@ -42,7 +42,7 @@
 						/>
 						<span>New</span>
 					</div>
-					<button id="button_dice" aria-label="New Selection">
+					<button id="button_dice" aria-label="New Selection" disabled>
 						<svg
 							class="dice_icon"
 							xmlns="http://www.w3.org/2000/svg"
@@ -124,7 +124,11 @@
 					</button>
 				</div>
 			</aside>
-			<section id="photo_grid"></section>
+			<section id="photo_grid">
+				<div id="loader_container">
+					<div class="loader"></div>
+				</div>
+			</section>
 		</main>
 		<footer>
 			<a href="#top">Back to top</a>
