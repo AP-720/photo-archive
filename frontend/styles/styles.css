@@ -267,6 +267,34 @@ input[type="range"]::-moz-range-track {
 	}
 }
 
+#to_top {
+	opacity: 0;
+	visibility: hidden;
+	position: fixed;
+	bottom: 2rem;
+	right: 3.5rem;
+	border: none;
+	outline: none;
+	background: color-mix(in oklab, oklch(0.9015 0.0144 22.78) 90%, transparent);
+	padding: var(--spacing-md);
+	border-radius: 50%;
+	aspect-ratio: 1;
+	display: grid;
+	cursor: pointer;
+	color: var(--text-main);
+	z-index: 99;
+}
+
+#to_top.visible {
+	opacity: 1;
+	visibility: visible;
+}
+
+#to_top:hover {
+	outline: solid 1px var(--text-main);
+	background: oklch(0.9015 0.0144 22.78);
+}
+
 /* Phone media queries*/
 
 @media (max-width: 700px) {
@@ -305,7 +333,7 @@ input[type="range"]::-moz-range-track {
 	}
 
 	#photo_grid {
-		grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%) 1fr));
+		grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
 	}
 
 	.sort_wrapper {
@@ -325,5 +353,10 @@ input[type="range"]::-moz-range-track {
 		width: 100%;
 		object-fit: contain;
 		justify-self: start;
+	}
+
+	#to_top {
+		bottom: 2rem;
+		right: 1.5rem;
 	}
 }

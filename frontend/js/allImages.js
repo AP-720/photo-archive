@@ -5,10 +5,12 @@ import { setLoading } from "./loading.js";
 let offset = 0;
 let isLoading = false;
 let sortOrder = SortOrder.NEWEST;
+const SCREENS_BEFORE_BUTTON = 8;
 
 const photoGrid = document.querySelector("#photo_grid");
 const radioGroup = document.querySelector(".sort_wrapper");
 const sentinel = document.querySelector("#sentinel");
+const backToTop = document.querySelector("#to_top");
 
 try {
 	setLoading(true);
@@ -62,7 +64,7 @@ async function infiniteScroll(entries) {
 
 	try {
 		isLoading = true;
-		setLoading(isLoading, false)
+		setLoading(isLoading, false);
 		const photos = await getAllPhotos(sortOrder, offset);
 
 		if (!photos.hasMore) {
@@ -76,8 +78,17 @@ async function infiniteScroll(entries) {
 		processTiles();
 	} finally {
 		isLoading = false;
-		setLoading(isLoading, false)
+		setLoading(isLoading, false);
 	}
 }
 
 observer.observe(sentinel);
+
+window.addEventListener("scroll", () => {
+	const triggerDistance = window.innerHeight * SCREENS_BEFORE_BUTTON;
+	backToTop.classList.toggle("visible", window.scrollY > triggerDistance);
+});
+
+backToTop.addEventListener("click", () => {
+	window.scrollTo({ top: 0, behavior: "smooth" });
+});
