@@ -1,16 +1,15 @@
 import { SortOrder, getAllPhotos, renderPhotos } from "./photos.js";
 import { processTiles, setCurrentPhotoData } from "./masonry.js";
 import { setLoading } from "./loading.js";
+import "./backToTop.js"
 
 let offset = 0;
 let isLoading = false;
 let sortOrder = SortOrder.NEWEST;
-const SCREENS_BEFORE_BUTTON = 8;
 
 const photoGrid = document.querySelector("#photo_grid");
 const radioGroup = document.querySelector(".sort_wrapper");
 const sentinel = document.querySelector("#sentinel");
-const backToTop = document.querySelector("#to_top");
 
 try {
 	setLoading(true);
@@ -83,12 +82,3 @@ async function infiniteScroll(entries) {
 }
 
 observer.observe(sentinel);
-
-window.addEventListener("scroll", () => {
-	const triggerDistance = window.innerHeight * SCREENS_BEFORE_BUTTON;
-	backToTop.classList.toggle("visible", window.scrollY > triggerDistance);
-});
-
-backToTop.addEventListener("click", () => {
-	window.scrollTo({ top: 0, behavior: "smooth" });
-});

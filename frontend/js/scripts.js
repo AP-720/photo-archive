@@ -2,6 +2,7 @@ import { getPhotos, renderPhotos, seenIds } from "./photos.js";
 import "./gallery.js";
 import { processTiles, setCurrentPhotoData } from "./masonry.js";
 import { setLoading } from "./loading.js";
+import "./backToTop.js"
 
 const photoGrid = document.querySelector("#photo_grid");
 
