@@ -7,7 +7,12 @@ export const SortOrder = {
 
 export const seenIds = new Set();
 
-const baseAddress = "http://127.0.0.1:8000";
+// Dynamically creating the API url, depending if running locally or live.
+const hostname = window.location.hostname;
+const isLocal = hostname === "127.0.0.1" || hostname === "localhost";
+const baseAddress = isLocal
+	? "http://127.0.0.1:8000"
+	: "https://photo-archive-8i48.onrender.com";
 
 export async function getPhotos(weight, seenIds, limit = 50) {
 	const url = `${baseAddress}/random?weight=${weight}&limit=${limit}`;
