@@ -56,6 +56,7 @@ export function renderPhotos(photos, gridElement) {
 		const tile = document.createElement("div");
 		tile.classList.add("tile");
 		const img = document.createElement("img");
+		img.loading = "lazy";
 		img.src = buildCloudinaryUrl(photo.public_id);
 		tile.appendChild(img);
 		gridElement.appendChild(tile);
