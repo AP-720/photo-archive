@@ -276,13 +276,19 @@ input[type="range"]::-moz-range-track {
 	border: none;
 	outline: none;
 	background: color-mix(in oklab, oklch(0.9015 0.0144 22.78) 90%, transparent);
-	padding: var(--spacing-md);
-	border-radius: 50%;
-	aspect-ratio: 1;
-	display: grid;
 	cursor: pointer;
 	color: var(--text-main);
 	z-index: 99;
+	width: 3.5rem;
+	height: 3.5rem;
+	padding: 0;
+	border-radius: 50%;
+	display: grid;
+	place-items: center;
+}
+
+#to_top:focus-visible {
+	outline: auto;
 }
 
 #to_top.visible {
