@@ -52,11 +52,11 @@ export async function getAllPhotos(sortOrder, offset, limit = 50) {
  */
 export function renderPhotos(photos, gridElement) {
 	const tiles = [];
-	for (const photo of photos) {
+	for (const [i, photo] of photos.entries()) {
 		const tile = document.createElement("div");
 		tile.classList.add("tile");
 		const img = document.createElement("img");
-		img.loading = "lazy";
+		img.loading = i < 12 ? "eager" : "lazy";
 		img.src = buildCloudinaryUrl(photo.public_id);
 		tile.appendChild(img);
 		gridElement.appendChild(tile);
