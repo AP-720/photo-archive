@@ -302,6 +302,10 @@ input[type="range"]::-moz-range-track {
 	background: oklch(0.9015 0.0144 22.78);
 }
 
+#message_container:not(:empty) {
+	padding-top: var(--spacing-lg);
+}
+
 /* Phone media queries*/
 
 @media (max-width: 700px) {

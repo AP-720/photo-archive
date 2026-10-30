@@ -1,16 +1,17 @@
 import { getPhotos, renderPhotos, seenIds } from "./photos.js";
 import { processTiles, setCurrentPhotoData } from "./masonry.js";
-import { setLoading } from "./loading.js";
+import { setLoading, setMessage, clearMessage } from "./loading.js";
 
 const button = document.querySelector("#button_dice");
 const photoGrid = document.querySelector("#photo_grid");
-const loadingSpinner = document.querySelector("#loader_container");
+const messageContainer = document.querySelector("#message_container");
 
 button.addEventListener("click", async () => {
 	const weight = document.querySelector("#weight").value;
 
 	try {
-		setLoading(true)
+		clearMessage(messageContainer);
+		setLoading(true);
 
 		const photos = await getPhotos(weight, seenIds);
 
@@ -28,8 +29,11 @@ button.addEventListener("click", async () => {
 		const tileElements = renderPhotos(photos.photos, photoGrid);
 		setCurrentPhotoData(tileElements, photos.photos);
 		processTiles();
-	} finally {
-		setLoading(false)
 		window.scrollTo({ top: 0, behavior: "smooth" });
+	} catch (error) {
+		console.error(error);
+		setMessage(messageContainer, "Oops, something went wrong!");
+	} finally {
+		setLoading(false);
 	}
 });

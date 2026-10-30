@@ -9,3 +9,11 @@ export function setLoading(isLoading, dimPanel = true) {
 	loadingSpinner.style.display = isLoading ? "block" : "none";
 	photoGrid.classList.toggle("busy", isLoading && dimPanel);
 }
+
+export function setMessage(container, message) {
+	container.textContent = message;
+}
+
+export function clearMessage(container) {
+	container.textContent = "";
+}
