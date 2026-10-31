@@ -366,6 +366,7 @@ input[type="range"]::-moz-range-track {
 	}
 	.header_title {
 		padding-bottom: var(--spacing-lg);
+		font-size: 1.5rem;
 	}
 
 	.nav_bar {
@@ -404,5 +405,9 @@ input[type="range"]::-moz-range-track {
 	#to_top {
 		bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px));
 		right: calc(2rem + env(safe-area-inset-right, 0px));
+	}
+
+	#loader_container {
+		top: 60%;
 	}
 }
