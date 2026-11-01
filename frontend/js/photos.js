@@ -59,6 +59,15 @@ export function renderPhotos(photos, gridElement) {
 		const img = document.createElement("img");
 		img.loading = i < 12 ? "eager" : "lazy";
 		img.src = buildCloudinaryUrl(photo.public_id);
+		img.alt = `Photo taken on ${new Date(photo.date_taken).toLocaleDateString(
+			"en-GB",
+			{
+				day: "numeric",
+				month: "long",
+				year: "numeric",
+				timeZone: "UTC",
+			},
+		)}`;
 		tile.dataset.width = photo.width;
 		tile.dataset.height = photo.height;
 		tile.appendChild(img);
