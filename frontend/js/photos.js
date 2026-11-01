@@ -46,21 +46,22 @@ export async function getAllPhotos(sortOrder, offset, limit = 50) {
 
 /**
  * Creates and appends a tile div (containing an img) for each photo in the array.
- * @param {Object[]} photos - array of photo data objects
+ * Each tile stores the photo's natural pixel size in data-width and data-height,
+ * so the masonry layout can read it back from the page without keeping a separate list.
+ * The first 12 images load eagerly and the rest lazily.
+ * @param {Object[]} photos - array of photo data objects (needs public_id, width and height)
  * @param {HTMLElement} gridElement - the container element to render tiles into
- * @returns {HTMLElement[]} array of the created tile div elements, in the same order as `photos`
  */
 export function renderPhotos(photos, gridElement) {
-	const tiles = [];
 	for (const [i, photo] of photos.entries()) {
 		const tile = document.createElement("div");
 		tile.classList.add("tile");
 		const img = document.createElement("img");
 		img.loading = i < 12 ? "eager" : "lazy";
 		img.src = buildCloudinaryUrl(photo.public_id);
+		tile.dataset.width = photo.width;
+		tile.dataset.height = photo.height;
 		tile.appendChild(img);
 		gridElement.appendChild(tile);
-		tiles.push(tile);
 	}
-	return tiles;
 }

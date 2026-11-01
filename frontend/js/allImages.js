@@ -1,5 +1,5 @@
 import { SortOrder, getAllPhotos, renderPhotos } from "./photos.js";
-import { processTiles, setCurrentPhotoData } from "./masonry.js";
+import { processTiles } from "./masonry.js";
 import { setLoading, setMessage, clearMessage } from "./loading.js";
 import "./backToTop.js";
 
@@ -19,9 +19,8 @@ try {
 	const images = await getAllPhotos(sortOrder, offset);
 	offset = images.photos.length;
 
-	const tileElements = renderPhotos(images.photos, photoGrid);
+	renderPhotos(images.photos, photoGrid);
 
-	setCurrentPhotoData(tileElements, images.photos);
 	processTiles();
 } catch (error) {
 	console.error(error);
@@ -43,15 +42,13 @@ radioGroup.addEventListener("change", async (event) => {
 		setLoading(isLoading);
 
 		const photos = await getAllPhotos(requestedSortOrder, 0, previousCount);
-
 		sortOrder = requestedSortOrder;
 		offset = photos.photos.length;
 
 		const tiles = document.querySelectorAll(".tile");
 		tiles.forEach((tile) => tile.remove());
 
-		const tileElements = renderPhotos(photos.photos, photoGrid);
-		setCurrentPhotoData(tileElements, photos.photos);
+		renderPhotos(photos.photos, photoGrid);
 		processTiles();
 	} catch (error) {
 		console.error(error);
@@ -90,8 +87,7 @@ async function infiniteScroll(entries) {
 
 		offset += photos.photos.length;
 
-		const tileElements = renderPhotos(photos.photos, photoGrid);
-		setCurrentPhotoData(tileElements, photos.photos);
+		renderPhotos(photos.photos, photoGrid);
 		processTiles();
 	} catch (error) {
 		console.error(error);

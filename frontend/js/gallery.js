@@ -1,5 +1,5 @@
 import { getPhotos, renderPhotos, seenIds } from "./photos.js";
-import { processTiles, setCurrentPhotoData } from "./masonry.js";
+import { processTiles } from "./masonry.js";
 import { setLoading, setMessage, clearMessage } from "./loading.js";
 
 const button = document.querySelector("#button_dice");
@@ -26,8 +26,7 @@ button.addEventListener("click", async () => {
 		const tiles = document.querySelectorAll(".tile");
 		tiles.forEach((tile) => tile.remove());
 
-		const tileElements = renderPhotos(photos.photos, photoGrid);
-		setCurrentPhotoData(tileElements, photos.photos);
+		renderPhotos(photos.photos, photoGrid);
 		processTiles();
 		window.scrollTo({ top: 0, behavior: "smooth" });
 	} catch (error) {

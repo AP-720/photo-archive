@@ -1,6 +1,6 @@
 import { getPhotos, renderPhotos, seenIds } from "./photos.js";
 import "./gallery.js";
-import { processTiles, setCurrentPhotoData } from "./masonry.js";
+import { processTiles } from "./masonry.js";
 import { setLoading, setMessage, clearMessage } from "./loading.js";
 import "./backToTop.js";
 
@@ -16,9 +16,8 @@ try {
 		seenIds.add(photo.id);
 	}
 
-	const tileElements = renderPhotos(images.photos, photoGrid);
+	renderPhotos(images.photos, photoGrid);
 
-	setCurrentPhotoData(tileElements, images.photos);
 	processTiles();
 } catch (error) {
 	console.error(error);
