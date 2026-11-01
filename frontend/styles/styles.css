@@ -244,6 +244,17 @@ input[type="range"]::-moz-range-track {
 	justify-self: center;
 }
 
+.text_wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-lg);
+}
+
+.text_wrapper .contact_link {
+	align-self: flex-end;
+	color: inherit;
+}
+
 /* Loading spinner */
 /* HTML: <div class="loader"></div> */
 
