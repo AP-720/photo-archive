@@ -77,3 +77,22 @@ def all_images(
         has_more = len(rows) > limit
         batch = rows[:limit]
         return {"photos": batch, "hasMore": has_more}
+
+
+@app.get("/health")
+def health():
+    try:
+        with (
+            psycopg.connect(
+                DATABASE_URL, row_factory=dict_row, connect_timeout=3
+            ) as conn,
+            conn.cursor() as cur,
+        ):
+            cur.execute("SELECT 1 AS ok;")
+            row = cur.fetchone()
+        if row is None or row["ok"] != 1:
+            raise RuntimeError("Unexpected result from health query")
+    except (psycopg.Error, RuntimeError) as error:
+        print(f"Health check failed: {error}")
+        raise HTTPException(status_code=503, detail="Database unavailable")
+    return {"status": "ok"}
