@@ -1,7 +1,8 @@
 import os
+from typing import Annotated
 
 import psycopg
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from psycopg.rows import dict_row
 from pydantic import BaseModel
@@ -26,10 +27,15 @@ SORTORDER = {"ASC": "date_taken ASC, id ASC", "DESC": "date_taken DESC, id DESC"
 FLOOR = 0.05
 # Sets url with either the .env variable or the default given.
 DATABASE_URL = os.getenv("DATABASE_URL", "dbname=ap_archive")
+LIMIT_MAX = 6000
 
 
 @app.post("/random")
-def random(seen_ids: SeenIds, weight: float = 0.5, limit: int = 50):
+def random(
+    seen_ids: SeenIds,
+    weight: Annotated[float, Query(ge=0, le=1)] = 0.5,
+    limit: Annotated[int, Query(ge=1, le=LIMIT_MAX)] = 50,
+):
     limit_add_one = limit + 1
     with psycopg.connect(DATABASE_URL, row_factory=dict_row) as conn:
         with conn.cursor() as cur:
@@ -49,7 +55,11 @@ def random(seen_ids: SeenIds, weight: float = 0.5, limit: int = 50):
 
 
 @app.get("/all-images")
-def all_images(sort: str, offset: int, limit: int = 50):
+def all_images(
+    sort: str,
+    offset: Annotated[int, Query(ge=0)],
+    limit: Annotated[int, Query(ge=1, le=LIMIT_MAX)] = 50,
+):
     order_sql = SORTORDER.get(sort)
     if order_sql is None:
         raise HTTPException(status_code=400, detail="Unknown sort value")
