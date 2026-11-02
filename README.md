@@ -1,6 +1,6 @@
 # Andy Price Memorial Archive
 
-A personal photo archive: more than 3,600 photographs from 2008 to the present, browsable as a random mix or as a full list. Less a portfolio, more a lucky dip through the years.
+A personal photo archive: more than 3,600 photographs from 2008 to the present, browseable as a random mix or as a full list. Less a portfolio, more a lucky dip through the years.
 
 **Live site:** [andyprice.co](https://andyprice.co)
 
@@ -28,15 +28,15 @@ Raw facts are stored and derived values are computed at runtime. For example, ea
 
 ## Tech stack
 
-| Area | Tools |
-| --- | --- |
-| Frontend | Plain HTML, CSS and JavaScript (ES modules, no bundler) |
-| Backend | Python, FastAPI, psycopg |
-| Database | PostgreSQL |
-| Images | Cloudinary |
-| Image processing | Python, Pillow |
-| Hosting | GitHub Pages (frontend), Render (API and database) |
-| CI/CD | GitHub Actions deploys the frontend, Render deploys the API |
+| Area             | Tools                                                       |
+| ---------------- | ----------------------------------------------------------- |
+| Frontend         | Plain HTML, CSS and JavaScript (ES modules, no bundler)     |
+| Backend          | Python, FastAPI, psycopg                                    |
+| Database         | PostgreSQL                                                  |
+| Images           | Cloudinary                                                  |
+| Image processing | Python, Pillow                                              |
+| Hosting          | GitHub Pages (frontend), Render (API and database)          |
+| CI/CD            | GitHub Actions deploys the frontend, Render deploys the API |
 
 ## Project structure
 
@@ -61,11 +61,11 @@ ap-archive/
 
 ## API
 
-| Method and path | Parameters | Returns |
-| --- | --- | --- |
-| `POST /random` | Query: `weight` (0 to 1, default 0.5), `limit` (default 50). Body: `{"ids": [...]}` of photo ids to exclude | `{"photos": [...], "hasMore": bool}` |
-| `GET /all-images` | Query: `sort` (`ASC` or `DESC`), `offset` (0 or more), `limit` (default 50) | `{"photos": [...], "hasMore": bool}` |
-| `GET /health` | None | `{"status": "ok"}`, or `503` if the database cannot be reached |
+| Method and path   | Parameters                                                                                                  | Returns                                                        |
+| ----------------- | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `POST /random`    | Query: `weight` (0 to 1, default 0.5), `limit` (default 50). Body: `{"ids": [...]}` of photo ids to exclude | `{"photos": [...], "hasMore": bool}`                           |
+| `GET /all-images` | Query: `sort` (`ASC` or `DESC`), `offset` (0 or more), `limit` (default 50)                                 | `{"photos": [...], "hasMore": bool}`                           |
+| `GET /health`     | None                                                                                                        | `{"status": "ok"}`, or `503` if the database cannot be reached |
 
 Values outside the allowed ranges are rejected with `422`. An unknown `sort` value returns `400`. The queries use placeholders for all user-supplied values, and the sort order is picked from a fixed lookup.
 
@@ -105,12 +105,12 @@ Use `127.0.0.1` and not `localhost`. By default the API only allows that origin.
 
 **Environment variables**
 
-| Variable | Used by | Default | Purpose |
-| --- | --- | --- | --- |
-| `DATABASE_URL` | API | `dbname=ap_archive` | Postgres connection string |
-| `ALLOWED_ORIGINS` | API | `http://127.0.0.1:3000` | Comma-separated list of origins allowed by CORS |
+| Variable          | Used by            | Default                 | Purpose                                         |
+| ----------------- | ------------------ | ----------------------- | ----------------------------------------------- |
+| `DATABASE_URL`    | API, image scripts | `dbname=ap_archive`     | Postgres connection string                      |
+| `ALLOWED_ORIGINS` | API                | `http://127.0.0.1:3000` | Comma-separated list of origins allowed by CORS |
 
-The image scripts need a `CLOUDINARY_URL` in a `.env` file, which is gitignored. Never commit credentials.
+The image scripts read a `.env` file in the repo root, which is gitignored. It holds `CLOUDINARY_URL` and `RENDER_DB_URL` (the Render connection string, used in terminal commands). Never commit credentials, and never name the Render URL `DATABASE_URL` in `.env`, or every script run would hit production. [docs/adding-images.md](docs/adding-images.md) explains how to use them.
 
 </details>
 
