@@ -45,7 +45,6 @@ with (
     cur.execute("SELECT hash FROM images")
     rows = cur.fetchall()
     hashes = {row[0] for row in rows}
-    # print(hashes)
 
     failed = []
     for file in folder_path.rglob("*.jpg"):
@@ -61,7 +60,6 @@ with (
                 width = response["width"]
                 height = response["height"]
                 date_taken = get_date_taken(file)
-                print(date_taken)
                 cur.execute(
                     "INSERT INTO images (hash, public_id, date_taken, width,height) VALUES (%s, %s, %s, %s, %s)",
                     (hashed_file, public_id, date_taken, width, height),
