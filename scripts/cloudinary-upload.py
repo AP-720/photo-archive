@@ -38,7 +38,10 @@ def get_date_taken(path):
     return datetime.strptime(raw, "%Y:%m:%d %H:%M:%S").date()
 
 
-with psycopg.connect("dbname=ap_archive") as conn, conn.cursor() as cur:
+with (
+    psycopg.connect(os.getenv("DATABASE_URL", "dbname=ap_archive")) as conn,
+    conn.cursor() as cur,
+):
     cur.execute("SELECT hash FROM images")
     rows = cur.fetchall()
     hashes = {row[0] for row in rows}

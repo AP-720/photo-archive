@@ -14,7 +14,10 @@ config = cloudinary.config(secure=True)
 
 public_ids = sys.argv[1:]
 
-with psycopg.connect("dbname=ap_archive") as conn, conn.cursor() as cur:
+with (
+    psycopg.connect(os.getenv("DATABASE_URL", "dbname=ap_archive")) as conn,
+    conn.cursor() as cur,
+):
     failed = []
 
     for public_id in public_ids:
